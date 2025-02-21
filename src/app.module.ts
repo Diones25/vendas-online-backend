@@ -16,7 +16,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       entities: [`${__dirname}/**/*.entity{.ts,.js}`],
-      synchronize: process.env.ENV === 'development' ? true : false,
+      migrations: [`${__dirname}/migration/{.ts,*.js}`],
+      migrationsRun: true
     }),
     UserModule
   ],
