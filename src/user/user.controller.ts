@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserService } from './user.service';
+import { UserEntity } from './entities/user.entity';
+import { ResponseUserDto } from './dtos/response-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -13,7 +15,17 @@ export class UserController {
   }
 
   @Get()
-  async findAll() {
-    return this.userService.findAll();
+  async findAll(): Promise<ResponseUserDto[]> {
+    const users = await this.userService.findAll();
+    return users.map(user => new ResponseUserDto(user));
+  }
+
+  @Get(':userId')
+  async findUserById(@Param('userId') userId: number): Promise<ResponseUserDto> {
+    const user = await this.userService.getUserByIdUsingRelations(userId);
+    if (!user) {
+      throw new NotFoundException(`Usuário com ID ${userId} não encontrado`);
+    }
+    return new ResponseUserDto(user);
   }
 }
