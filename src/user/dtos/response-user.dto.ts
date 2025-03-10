@@ -1,5 +1,3 @@
-import { IsEmail, IsPhoneNumber, IsString, IsStrongPassword } from "class-validator";
-import { IsCPF } from "class-validator-cpf";
 import { UserEntity } from "../entities/user.entity";
 import { ResponseAddressDto } from "src/address/dtos/response-address.dto";
 
