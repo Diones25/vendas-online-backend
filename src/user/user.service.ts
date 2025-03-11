@@ -60,4 +60,18 @@ export class UserService {
 
     return user;
   }
+
+  async findByEmail(email: string){
+    const user = await this.usersRepository.findOne({
+      where: {
+        email
+      }
+    });
+
+    if (!user) {
+      throw new NotFoundException(`Usuário com o email ${email} não encontrado`);
+    }
+
+    return user;
+  }
 }
