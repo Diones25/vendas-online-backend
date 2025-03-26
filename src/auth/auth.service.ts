@@ -1,8 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { LoginDto } from './dtos/login.dto';
 import { UserService } from 'src/user/user.service';
-import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { validatePassword } from 'src/utils/password';
+import { LoginPayload } from './dtos/loginPayload.dto';
+import { ResponseUserDto } from 'src/user/dtos/response-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,31 +16,16 @@ export class AuthService {
   ) { }
 
   async login(loginDto: LoginDto) {
-    const user = await this.userService.findByEmail(loginDto.email).catch(() => undefined);
+    const user: UserEntity | undefined = await this.userService.findByEmail(loginDto.email).catch(() => undefined);
+    
+    const isMatch = await validatePassword(loginDto.password, user?.password || '');
 
-    if (!user) {
+    if (!user || !isMatch) {
       throw new NotFoundException(`Email ou senha inválidos`);
     }
-    
-    const isMatch = await compare(loginDto.password, user.password);
-
-    if (!isMatch) {
-      throw new NotFoundException(`Email ou senha inválidos`);
-    }
-
-    const accessToken = this.jwtService.sign({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    });
-    
-
     return {
-      accessToken: accessToken,
-      user: {
-        id: user.id,
-        email: user.email,
-      }
+      accessToken: this.jwtService.sign({ ...new LoginPayload(user) }), 
+      user: new ResponseUserDto(user),
     };
   }
 }
