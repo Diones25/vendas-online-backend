@@ -1,7 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
-
-import { hash } from 'bcrypt';
 import { UserEntity } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,8 +14,6 @@ export class UserService {
   ) { }
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const salt = 10;
-
     const hashedPassword = await createPasswordHashed(createUserDto.password);
 
     return this.usersRepository.save({
