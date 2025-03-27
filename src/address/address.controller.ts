@@ -3,6 +3,7 @@ import { CreateAddressDto } from './dtos/create-address.dto';
 import { AddressService } from './address.service';
 import { Roles } from 'src/decorators/roles.decorator';
 import { USerType } from 'src/user/enum/user-type.emu';
+import { UserId } from 'src/decorators/user-id-decorator';
 
 @Controller('address')
 export class AddressController {
@@ -10,9 +11,9 @@ export class AddressController {
   constructor(private readonly addressService: AddressService) {}
 
   @Roles(USerType.USER)
-  @Post('/:userId')
+  @Post()
   @UsePipes(ValidationPipe)
-  async createAddress(@Param('userId') userId: number , @Body() createAddressDto: CreateAddressDto) {
+  async createAddress(@UserId() userId: number, @Body() createAddressDto: CreateAddressDto) {
     return this.addressService.createAddress(createAddressDto, userId);
   }
 }
