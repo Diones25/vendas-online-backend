@@ -1,5 +1,5 @@
 import { UserEntity } from "../entities/user.entity";
-import { ResponseAddressDto } from "src/address/dtos/response-address.dto";
+import { ResponseAddressDto } from "../../address/dtos/response-address.dto";
 
 export class ResponseUserDto {
   id: number;
