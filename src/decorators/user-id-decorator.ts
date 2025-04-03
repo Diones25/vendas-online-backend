@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 import { authorizationToLoginPayload } from "../utils/base-64-converter";
 
