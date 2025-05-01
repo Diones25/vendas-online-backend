@@ -1,4 +1,4 @@
-import { JoinTable, MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
 
 export class CreateTableAddress1740156484062 implements MigrationInterface {
 
