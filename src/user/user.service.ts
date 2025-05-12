@@ -4,6 +4,7 @@ import { UserEntity } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { createPasswordHashed } from '../utils/password';
+import { USerType } from './enum/user-type.emu';
 
 @Injectable()
 export class UserService {
@@ -24,7 +25,7 @@ export class UserService {
 
     return this.usersRepository.save({
       ...createUserDto,
-      typeUser: 1,
+      typeUser: USerType.USER,
       password: hashedPassword
     });
   }
