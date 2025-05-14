@@ -1,0 +1,14 @@
+@apiurl = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidHlwZVVzZXIiOjEsImlhdCI6MTc0NzIzMTYwNCwiZXhwIjoxNzQ3ODM2NDA0fQ.4P4Bjrz6GO3V_kkauMFrGe1TPVoZxbYCwEYsJewfL-k
+
+### POST login
+POST http://localhost:3000/auth
+Content-Type: application/json
+{
+  "email": "diones@gmail.com",
+  "password": "1234libriano"
+}
+
+###
+GET http://localhost:3000/category 
+Authorization: {{token}}
