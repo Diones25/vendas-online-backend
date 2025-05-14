@@ -16,7 +16,7 @@ export class CategoryController {
     return (await this.categoryService.findAll()).map(category => new ResponseCategoryDto(category));
   }
 
-  //@Roles(USerType.ADMIN)
+  @Roles(USerType.ADMIN)
   @Post()
   async createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
