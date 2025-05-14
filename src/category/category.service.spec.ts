@@ -4,7 +4,8 @@ import { Repository } from "typeorm";
 import { CategoryEntity } from "./entities/category.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { categoryMock } from "./mocks/category.mock";
-import { NotFoundException } from "@nestjs/common";
+import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { CreateCategoryMock } from "./dtos/create-category.dto copy";
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -15,6 +16,7 @@ describe('CategoryService', () => {
       providers: [CategoryService, {
         provide: getRepositoryToken(CategoryEntity),
         useValue: {
+          findOne: jest.fn().mockResolvedValue(categoryMock),
           find: jest.fn().mockResolvedValue([categoryMock]),
           save: jest.fn().mockResolvedValue(categoryMock),
         }
@@ -43,5 +45,32 @@ describe('CategoryService', () => {
   it('should return error in list category exception', async () => {
     jest.spyOn(categoryRepository, 'find').mockRejectedValue(new NotFoundException());
     expect(service.findAll()).rejects.toThrowError();
+  });
+
+  it('should return error if exist category name', async () => {
+    jest.spyOn(categoryRepository, 'save').mockRejectedValue(new BadRequestException());
+    expect(service.create(CreateCategoryMock)).rejects.toThrowError();
+  });
+
+  it('should return category after save', async () => {
+    jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(null);
+    const category = await service.create(CreateCategoryMock);
+    expect(category).toEqual(categoryMock);
+  });
+
+  it('should return error in exeption', async () => {
+    jest.spyOn(categoryRepository, 'save').mockRejectedValue(new BadRequestException());
+    expect(service.create(CreateCategoryMock)).rejects.toThrowError();
+  });
+
+  it('should return category in find by name', async () => {
+    jest.spyOn(categoryRepository, 'findOne').mockResolvedValue(null);
+    const category = await service.findCategoryByName(CreateCategoryMock.name);
+    expect(category).toBeFalsy();
+  });
+
+  it('should return error if category in find by name empty', async () => {
+    jest.spyOn(categoryRepository, 'findOne').mockRejectedValue(new NotFoundException());
+    expect(service.findCategoryByName(CreateCategoryMock.name)).rejects.toThrowError();
   });
 });
