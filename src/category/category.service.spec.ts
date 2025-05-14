@@ -5,7 +5,7 @@ import { CategoryEntity } from "./entities/category.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { categoryMock } from "./mocks/category.mock";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
-import { CreateCategoryMock } from "./dtos/create-category.dto copy";
+import { CreateCategoryMock } from "./dtos/create-category.dto";
 
 describe('CategoryService', () => {
   let service: CategoryService;
