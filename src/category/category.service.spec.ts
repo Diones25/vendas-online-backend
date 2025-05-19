@@ -73,4 +73,14 @@ describe('CategoryService', () => {
     jest.spyOn(categoryRepository, 'findOne').mockRejectedValue(new NotFoundException());
     expect(service.findCategoryByName(CreateCategoryMock.name)).rejects.toThrowError();
   });
+
+  it('should return category in find by id', async () => {
+    const category = await service.findCategoryById(categoryMock.id);
+    expect(category).toEqual(categoryMock);
+  });
+
+  it('should return error in not found category', async () => {
+    jest.spyOn(categoryRepository, 'findOne').mockRejectedValue(new NotFoundException());
+    expect(service.findCategoryById(categoryMock.id)).rejects.toThrowError();
+  });
 });
