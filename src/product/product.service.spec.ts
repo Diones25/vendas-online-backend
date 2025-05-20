@@ -4,24 +4,38 @@ import { Repository } from 'typeorm';
 import { ProductEntity } from './entities/product.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { productMock } from './mocks/product.mock';
+import { createProductMock } from './mocks/create-product.mock';
+import { CategoryService } from '../category/category.service';
+import { categoryMock } from '../category/mocks/category.mock';
 
 describe('ProductService', () => {
   let service: ProductService;
   let productRepository: Repository<ProductEntity>;
+  let categoryService: CategoryService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductService, {
-        provide: getRepositoryToken(ProductEntity),
-        useValue: {
-          find: jest.fn().mockResolvedValue([productMock]),
-          save: jest.fn().mockResolvedValue(productMock)
+      providers: [
+        ProductService,
+        {
+          provide: getRepositoryToken(ProductEntity),
+          useValue: {
+            find: jest.fn().mockResolvedValue([productMock]),
+            save: jest.fn().mockResolvedValue(productMock)
+          } 
+        },
+        {
+          provide: CategoryService,
+          useValue: {
+            findCategoryById: jest.fn().mockResolvedValue(categoryMock)
+          }
         }
-      }],
+      ],
     }).compile();
 
     service = module.get<ProductService>(ProductService);
     productRepository = module.get<Repository<ProductEntity>>(getRepositoryToken(ProductEntity));
+    categoryService = module.get<CategoryService>(CategoryService);
   });
 
   it('should be defined', () => {
@@ -42,5 +56,15 @@ describe('ProductService', () => {
   it('should return error in exception', async () => {
     jest.spyOn(productRepository, 'find').mockRejectedValue(new Error());
     expect(service.findAll()).rejects.toThrowError();
+  });
+
+  it('should return product after insert in DB', async () => {
+    const product = await service.create(createProductMock);
+    expect(product).toEqual(productMock);
+  });
+
+  it('should return product after insert in DB', async () => {
+    const product = await service.create(createProductMock);
+    expect(product).toEqual(productMock);
   });
 });
