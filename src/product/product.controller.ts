@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Roles } from 'src/decorators/roles.decorator';
 import { USerType } from 'src/user/enum/user-type.emu';
 import { ProductService } from './product.service';
@@ -19,5 +19,11 @@ export class ProductController {
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
+  }
+
+  @Roles(USerType.ADMIN)
+  @Delete(":id")
+  async remove(@Param('id') id: number) {
+    return this.productService.remove(id);
   }
 }

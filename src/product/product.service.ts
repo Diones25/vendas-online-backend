@@ -28,4 +28,19 @@ export class ProductService {
     await this.categoryService.findCategoryById(createProductDto.categoryId);
     return this.productRepository.save(createProductDto);
   }
+
+  async findProductById(id: number) {
+    const product = await this.productRepository.findOneBy({ id });
+
+    if (!product) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
+
+    return product;
+  }
+
+  async remove(id: number) {
+    await this.findProductById(id);
+    return this.productRepository.delete(id);
+  }
 }
