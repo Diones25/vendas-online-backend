@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
 import { Repository } from 'typeorm';
@@ -31,13 +31,19 @@ export class ProductService {
   }
 
   async findProductById(id: number) {
-    const product = await this.productRepository.findOneBy({ id });
+    try {
+      const product = await this.productRepository.findOneBy({ id });
 
-    if (!product) {
-      throw new NotFoundException(`Product with id ${id} not found`);
+      if (!product) {
+        throw new NotFoundException(`Product with id ${id} not found`);
+      }
+
+      return product;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error retrieving product with id ${id}: ${error.message}`,
+      );
     }
-
-    return product;
   }
 
   async remove(id: number) {
