@@ -3,8 +3,9 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { createPasswordHashed } from '../utils/password';
+import { createPasswordHashed, validatePassword } from '../utils/password';
 import { USerType } from './enum/user-type.emu';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 
 @Injectable()
 export class UserService {
@@ -77,5 +78,25 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async updatePassword(id: number, updatePasswordDto: UpdatePasswordDto) {
+    const user = await this.findUserById(id);
+
+    const hashedPassword = await createPasswordHashed(updatePasswordDto.newPassword);
+
+    const isMatch = await validatePassword(
+      updatePasswordDto.lastPassword,
+      user.password || ''
+    );
+
+    if (!isMatch) {
+      throw new BadRequestException('Last password is incorrect');
+    }
+  
+    return this.usersRepository.save({
+      ...user,
+      password: hashedPassword
+    });
   }
 }

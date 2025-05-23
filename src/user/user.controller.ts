@@ -1,7 +1,9 @@
-import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Patch, Post } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserService } from './user.service';
 import { ResponseUserDto } from './dtos/response-user.dto';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
+import { UserId } from 'src/decorators/user-id-decorator';
 
 @Controller('user')
 export class UserController {
@@ -26,5 +28,10 @@ export class UserController {
       throw new NotFoundException(`Usuário com ID ${userId} não encontrado`);
     }
     return new ResponseUserDto(user);
+  }
+
+  @Patch()
+  async updatePassword(@UserId() id: number, @Body() updatePasswordDto: UpdatePasswordDto) {
+    return this.userService.updatePassword(id, updatePasswordDto);
   }
 }
