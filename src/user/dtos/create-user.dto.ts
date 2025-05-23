@@ -15,12 +15,13 @@ export class CreateUserDto {
   @IsCPF({ message: 'Deve ser um CPF válido' })
   cpf: string;
 
+  @IsString({ message: 'Deve ser uma string' })
   @IsStrongPassword({
-    minLength: 6,
-    minLowercase: 0,
-    minUppercase: 0,
-    minNumbers: 0,
-    minSymbols: 0,
+    minLength: 8,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 1,
   },{ message: 'A senha não é forte o suficiente' })
   password: string;
 }
